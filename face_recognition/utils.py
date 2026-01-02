@@ -1,3 +1,4 @@
+from requests.exceptions import RequestException 
 import requests
 import face_recognition
 import cv2
@@ -17,6 +18,7 @@ def get_face_encoding(image):
     if len(boxes) == 0:
         print("No face detected.")
         return None
+
     if len(boxes) > 1:
         print("Multiple faces detected. Please ensure only one person is in frame.")
         return None
@@ -24,19 +26,22 @@ def get_face_encoding(image):
     encodings = face_recognition.face_encodings(rgb_image, boxes)
     return encodings[0]
 
-def register_student_api(name, encoding):
+def register_student_api(name, encoding, block='D'):
     """
     Sends registration data to the backend.
     """
     url = f"{API_BASE_URL}/register_student"
     payload = {
         "name": name,
-        "face_encoding": encoding.tolist()
+        "face_encoding": encoding.tolist(),
+        "block": block
     }
+
     try:
-        response = requests.post(url, json=payload)
-        return response.json(), response.status_code
-    except requests.exceptions.RequestException as e:
+        res = requests.post(url, json=payload)
+        return res.json(), res.status_code
+
+    except RequestException as e:
         print(f"Error connecting to backend: {e}")
         return None, 500
 
@@ -47,13 +52,13 @@ def fetch_known_encodings():
     """
     url = f"{API_BASE_URL}/get_encodings"
     try:
-        response = requests.get(url)
-        if response.status_code == 200:
-            return response.json()
+        res = requests.get(url)
+        if res.status_code == 200:
+            return res.json()
         else:
-            print(f"Failed to fetch encodings: {response.status_code}")
+            print(f"Failed to fetch encodings: {res.status_code}")
             return {}
-    except requests.exceptions.RequestException as e:
+    except RequestException as e:
         print(f"Error connecting to backend: {e}")
         return {}
 
@@ -79,9 +84,9 @@ def recognize_face(image, known_encodings_dict):
     matches = face_recognition.compare_faces(known_encodings, unknown_encoding, tolerance=0.5)
     face_distances = face_recognition.face_distance(known_encodings, unknown_encoding)
     
-    best_match_index = np.argmin(face_distances)
-    if matches[best_match_index]:
-        student_id = known_ids[best_match_index]
+    best = np.argmin(face_distances)
+    if matches[best]:
+        student_id = known_ids[best]
         name = known_encodings_dict[student_id]['name']
         return student_id, name
     
