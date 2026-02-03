@@ -12,7 +12,7 @@ from face_recognition import face_locations
 
 # Configuration
 API_BASE_URL = "http://localhost:5000"
-HOSTEL_ENTRY_ENDPOINT = f"{API_BASE_URL}/hostel_entry"
+HOSTEL_ENTRY_ENDPOINT = f"{API_BASE_URL}/scan_hostel"
 # ARDUINO_PORT = 'COM3' # Change this to your actual port
 
 def hostel_gate_loop():
@@ -67,9 +67,9 @@ def hostel_gate_loop():
                     payload = {"student_id": student_id}
                     response = requests.post(HOSTEL_ENTRY_ENDPOINT, json=payload)
                     
-                    if response.status_code == 200:
+                    if response.status_code == 200 or response.status_code == 201:
                         data = response.json()
-                        print(f"Entry Approved: {data.get('message')}")
+                        print(f"Server: {data.get('message')}")
                         # if data.get('open_gate'):
                         #     gate.open_gate()
                     else:

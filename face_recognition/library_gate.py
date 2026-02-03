@@ -6,7 +6,7 @@ from face_recognition import face_locations
 
 # Configuration
 API_BASE_URL = "http://localhost:5000"
-LIBRARY_EXIT_ENDPOINT = f"{API_BASE_URL}/library_exit"
+LIBRARY_EXIT_ENDPOINT = f"{API_BASE_URL}/scan_library"
 
 def library_gate_loop():
     print("Initializing library gate system...")
@@ -51,15 +51,14 @@ def library_gate_loop():
                 print(f"Student {name} exiting library...")
 
                 try:
-                    TRIP_TIME = 10 # to change 
-
-                    payload = {"student_id": student_id, "duration_minutes": TRIP_TIME} 
+                    payload = {"student_id": student_id} 
                     res = requests.post(LIBRARY_EXIT_ENDPOINT, json=payload, timeout=10)
 
-                    if res.status_code == 201:
-                        print(f"Timer started for {name}. Expected arrival in {TRIP_TIME} min.")
-                    elif res.status_code == 200:
-                        print(f"Timer already active for {name}.")
+                    if res.status_code == 200 or res.status_code == 201:
+                        data = res.json()
+                        print(f"Server: {data.get('message')}")
+                        if data.get('open_gate'):
+                            print("GATE OPENING...")
                     else:
                         print(f"Server error: {res.text}")
 
