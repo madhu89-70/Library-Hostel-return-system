@@ -11,7 +11,9 @@ if "cap" not in st.session_state:
     st.session_state.cap = None
 
 # Configuration
-API_BASE_URL = "http://localhost:5000"
+from config import Config
+API_BASE_URL = Config.API_BASE_URL
+
 REFRESH_RATE = 1 # Seconds
 
 st.set_page_config(

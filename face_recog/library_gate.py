@@ -4,9 +4,9 @@ import requests
 from face_recog.utils import fetch_known_encodings, recognize_face, draw_boxes
 from face_recognition import face_locations
 
-# Configuration
-API_BASE_URL = "http://localhost:5000"
-LIBRARY_EXIT_ENDPOINT = f"{API_BASE_URL}/scan_library"
+from config import Config
+API_BASE_URL = Config.API_BASE_URL
+LIBRARY_EXIT_ENDPOINT = Config.LIBRARY_EXIT_ENDPOINT
 
 def library_gate_loop():
     print("Initializing library gate system...")

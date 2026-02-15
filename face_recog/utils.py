@@ -5,7 +5,8 @@ import numpy as np
 import cv2
 
 # Configuration
-API_BASE_URL = "http://localhost:5000" 
+from config import Config
+API_BASE_URL = Config.API_BASE_URL
 
 def get_face_encoding(frame):
     """

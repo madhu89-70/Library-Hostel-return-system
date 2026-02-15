@@ -7,12 +7,13 @@ import os
 # Add arduino directory to path to import serial_comms
 # sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../arduino')))
 # from serial_comms import GateController
-from utils import fetch_known_encodings, recognize_face, draw_boxes
+from face_recog.utils import fetch_known_encodings, recognize_face, draw_boxes
 from face_recognition import face_locations
 
 # Configuration
-API_BASE_URL = "http://localhost:5000"
-HOSTEL_ENTRY_ENDPOINT = f"{API_BASE_URL}/scan_hostel"
+from config import Config
+API_BASE_URL = Config.API_BASE_URL
+HOSTEL_ENTRY_ENDPOINT = Config.HOSTEL_ENTRY_ENDPOINT
 # ARDUINO_PORT = 'COM3' # Change this to your actual port
 
 def hostel_gate_loop():
