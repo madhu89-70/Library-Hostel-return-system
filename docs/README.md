@@ -1,6 +1,6 @@
-# Smart Timed Hostel Return System
+# Smart Entry and Exit System
 
-A complete end-to-end system for tracking student return times from the library to the hostel using face recognition, a Flask backend, a Streamlit dashboard, and Arduino-based gate control.
+A timed end-to-end system for tracking student travel times between the library and the hostel using face recognition, a backend, a dashboard, and Arduino-based gate control.
 
 ## Project Structure
 - `backend/`: Flask server (API, Database, Scheduler).
@@ -30,7 +30,6 @@ A complete end-to-end system for tracking student return times from the library 
    # Dashboard
    pip install -r dashboard/requirements.txt
    ```
-   *(Note: You can install all in one go if you prefer)*
 
 3. **Upload Arduino Sketch:**
    - Open `arduino/gate_control/gate_control.ino` in Arduino IDE.
@@ -80,7 +79,3 @@ python -m face_recog.hostel_gate
 ```
 - Ensure Arduino is connected (update COM port in `hostel_gate.py` if needed).
 - When it recognizes you, it stops the timer and opens the gate.
-
-## Testing the Timer
-- By default, the timer is set to **1 minute** in `library_gate.py` for testing purposes.
-- If you wait >1 minute between Library Exit and Hostel Entry, the Dashboard will show an Alert.
