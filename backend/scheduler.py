@@ -3,8 +3,31 @@ from apscheduler.triggers.date import DateTrigger
 from datetime import datetime
 from database import db
 from models import Trip
+import requests
+
+from config import Config
+NTFY_URL = f"{Config.NTFY_SRVR}/{Config.NTFY_TOPIC}"
 
 scheduler = BackgroundScheduler()
+
+def ntfy_admin(student_name, direction):
+    """
+    Sends a push notification via ntfy.sh
+    """
+    try:
+        res = requests.post(
+            NTFY_URL,
+            data=f"Student {student_name} is LATE for trip: {direction}".encode('utf-8'),
+            headers={
+                "Title": "Trip Limit Exceeded!",
+                "Priority": "high",
+                "Tags": "warning,clock1"
+            }
+        )
+        return res.status_code == 200
+    except Exception as e:
+        print(f"Failed to send ntfy alert: {e}")
+        return False
 
 def check_trip_expiry(app, trip_id):
     """
@@ -17,6 +40,8 @@ def check_trip_expiry(app, trip_id):
             trip.is_alert = True
             db.session.commit()
             print(f"ALERT: Trip {trip_id} for Student {trip.student.name} is LATE!")
+
+            ntfy_admin(trip.student.name, trip.direction)
 
 def start_scheduler():
     if not scheduler.running:

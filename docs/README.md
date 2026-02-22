@@ -70,12 +70,15 @@ Open a new terminal:
 ```bash
 python -m face_recog.library_gate
 ```
-- When it recognizes you, it starts the timer.
 
 ### Step 5: Run Hostel Gate (Laptop B)
 Open a new terminal:
 ```bash
 python -m face_recog.hostel_gate
 ```
-- Ensure Arduino is connected (update COM port in `hostel_gate.py` if needed).
-- When it recognizes you, it stops the timer and opens the gate.
+
+- When a face is recognized, the trip starts from Library->Hostel or vice versa.
+
+For late alerts, add `NTFY_SRVR` and `NTFY_TOPIC` in `.env`. 
+
+When a student exceeds the time limit, a notification is sent the to the specified `ntfy` URL.
